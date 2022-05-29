@@ -3,7 +3,7 @@
 ## Objectivies
 
 - [x] Start express.js project
-- [ ] Create entity sale
+- [x] Create entity sale
 - [ ] Create entity purchase
 - [ ] Create route cards
 - [ ] Create route graphics
