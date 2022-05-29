@@ -38,21 +38,32 @@ export class ReportService {
     return [
       {
         tag: 'COMPRAS',
-        valor: `R$ ${ totalPurchases }`,
+        valor: this.valueCurrencyFormatter(+totalPurchases),
       },
       {
         tag: 'VENDAS',
-        valor: `R$ ${ totalSales }`,
+        valor: this.valueCurrencyFormatter(+totalSales),
       },
       {
         tag: 'ICMS',
-        valor: `R$ ${ ICMSPurchases }`,
+        valor: this.valueCurrencyFormatter(+ICMSPurchases),
       },
       {
         tag: 'ST',
-        valor: `R$ ${ STPurchases }`,
+        valor: this.valueCurrencyFormatter(+STPurchases),
       },
     ];
+  }
+
+  //#endregion
+
+  //#region Private Functions
+
+  /**
+   * Método que fomarta um valor para o front
+   */
+  private valueCurrencyFormatter(value: number): string {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
   //#endregion
