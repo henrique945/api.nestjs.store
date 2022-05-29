@@ -1,4 +1,6 @@
+import { PurchaseProxy } from '../../purchase/models/purchase.proxy';
 import { PurchaseService } from '../../purchase/services/purchase.service';
+import { SaleProxy } from '../../sale/models/sale.proxy';
 import { SaleService } from '../../sale/services/sale.service';
 import { ReportCardProxy } from '../models/report-card.proxy';
 import { ReportGraphicProxy } from '../models/report-graphic.proxy';
@@ -21,21 +23,10 @@ export class ReportService {
     const purchases = await this.purchaseService.listPurchases();
     const sales = await this.saleService.listSales();
 
-    const totalPurchases = purchases.reduce((sum, i) => {
-      return sum + i.total;
-    }, 0).toFixed(2);
-
-    const totalSales = sales.reduce((sum, i) => {
-      return sum + i.total;
-    }, 0).toFixed(2);
-
-    const ICMSPurchases = purchases.reduce((sum, i) => {
-      return sum + i.ICMS;
-    }, 0).toFixed(2);
-
-    const STPurchases = purchases.reduce((sum, i) => {
-      return sum + i.ST;
-    }, 0).toFixed(2);
+    const totalPurchases = this.getTotalSum(purchases, 'total');
+    const totalSales = this.getTotalSum(sales, 'total');
+    const ICMSPurchases = this.getTotalSum(purchases, 'ICMS');
+    const STPurchases = this.getTotalSum(purchases, 'ST');
 
     return [
       {
@@ -68,13 +59,8 @@ export class ReportService {
       const purchasesOnYear = purchases.filter(purchase => purchase.data.includes(year.toString()));
       const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
 
-      const totalPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
-        return sum + i.total;
-      }, 0).toFixed(2));
-
-      const totalSalesOnYear = +(salesOnYear.reduce((sum, i) => {
-        return sum + i.total;
-      }, 0).toFixed(2));
+      const totalPurchasesOnYear = this.getTotalSum(purchasesOnYear, 'total');
+      const totalSalesOnYear = this.getTotalSum(salesOnYear, 'total');
 
       graphics.push({
         ano: year.toString(),
@@ -106,21 +92,10 @@ export class ReportService {
       const purchasesOnYear = purchases.filter(purchase => purchase.data.includes(year.toString()));
       const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
 
-      const totalPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
-        return sum + i.total;
-      }, 0).toFixed(2));
-
-      const ICMSPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
-        return sum + i.ICMS;
-      }, 0).toFixed(2));
-
-      const STPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
-        return sum + i.ST;
-      }, 0).toFixed(2));
-
-      const totalSalesOnYear = +(salesOnYear.reduce((sum, i) => {
-        return sum + i.total;
-      }, 0).toFixed(2));
+      const totalPurchasesOnYear = this.getTotalSum(purchasesOnYear, 'total');
+      const ICMSPurchasesOnYear = this.getTotalSum(purchasesOnYear, 'ICMS');
+      const STPurchasesOnYear = this.getTotalSum(purchasesOnYear, 'ST');
+      const totalSalesOnYear = this.getTotalSum(salesOnYear, 'total');
 
       table.push({
         ano: year.toString(),
@@ -143,6 +118,15 @@ export class ReportService {
    */
   private valueCurrencyFormatter(value: number): string {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  /**
+   * Método que retorna a soma total de compras ou vendas por propriedade
+   */
+  private getTotalSum(list: (PurchaseProxy | SaleProxy)[], property: string): number {
+    return +(list.reduce((sum, i) => {
+      return sum + i[property];
+    }, 0).toFixed(2));
   }
 
   //#endregion
