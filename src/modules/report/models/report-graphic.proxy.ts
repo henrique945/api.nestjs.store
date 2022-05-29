@@ -11,7 +11,7 @@ export class ReportGraphicProxy {
   //#region Public Properties
 
   /**
-   * Ano análisado
+   * Ano analisado
    */
   public ano: string;
 

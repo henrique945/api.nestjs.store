@@ -2,6 +2,7 @@ import { PurchaseService } from '../../purchase/services/purchase.service';
 import { SaleService } from '../../sale/services/sale.service';
 import { ReportCardProxy } from '../models/report-card.proxy';
 import { ReportGraphicProxy } from '../models/report-graphic.proxy';
+import { ReportTableProxy } from '../models/report-table.proxy';
 
 export class ReportService {
 
@@ -65,11 +66,12 @@ export class ReportService {
     // calcular total por ano
     for (let year = 2017; year <= 2021; year++) {
       const purchasesOnYear = purchases.filter(purchase => purchase.data.includes(year.toString()));
+      const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
+
       const totalPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
         return sum + i.total;
       }, 0).toFixed(2));
 
-      const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
       const totalSalesOnYear = +(salesOnYear.reduce((sum, i) => {
         return sum + i.total;
       }, 0).toFixed(2));
@@ -92,6 +94,44 @@ export class ReportService {
     });
 
     return graphics;
+  }
+
+  public async getTable(): Promise<ReportTableProxy[]> {
+    const purchases = await this.purchaseService.listPurchases();
+    const sales = await this.saleService.listSales();
+
+    const table: ReportTableProxy[] = [];
+
+    for (let year = 2017; year <= 2021; year++) {
+      const purchasesOnYear = purchases.filter(purchase => purchase.data.includes(year.toString()));
+      const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
+
+      const totalPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
+        return sum + i.total;
+      }, 0).toFixed(2));
+
+      const ICMSPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
+        return sum + i.ICMS;
+      }, 0).toFixed(2));
+
+      const STPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
+        return sum + i.ST;
+      }, 0).toFixed(2));
+
+      const totalSalesOnYear = +(salesOnYear.reduce((sum, i) => {
+        return sum + i.total;
+      }, 0).toFixed(2));
+
+      table.push({
+        ano: year.toString(),
+        compras: this.valueCurrencyFormatter(totalPurchasesOnYear),
+        vendas: this.valueCurrencyFormatter(totalSalesOnYear),
+        ICMS: this.valueCurrencyFormatter(ICMSPurchasesOnYear),
+        ST: this.valueCurrencyFormatter(STPurchasesOnYear),
+      });
+    }
+
+    return table;
   }
 
   //#endregion

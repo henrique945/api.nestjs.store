@@ -6,8 +6,8 @@
 - [x] Create entity sale
 - [x] Create entity purchase
 - [x] Create route cards
-- [ ] Create route graphics
-- [ ] Create route table
+- [x] Create route graphics
+- [x] Create route table
 
 ## Entidades
 
