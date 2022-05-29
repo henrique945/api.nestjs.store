@@ -21,9 +21,9 @@ export class ReportGraphicProxy {
   public saldo: string;
 
   /**
-   * É o percentual que o saldo represente entre a soma de todos os soldas
+   * É o percentual que o saldo represente entre a soma de todos os saldos
    */
-  porcentagem: number;
+  public porcentagem: number;
 
   //#endregion
 

@@ -23,8 +23,10 @@ import { SaleService } from './modules/sale/services/sale.service';
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const cors = require('cors')
 
 app.use(express.json());
+app.use(cors())
 
 // TODO: implement real database connections
 // TODO: implement Swagger
