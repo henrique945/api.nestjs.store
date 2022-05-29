@@ -75,7 +75,7 @@ export class ReportService {
     }, 0);
 
     graphics.forEach(graphic => {
-      graphic.porcentagem = +(+graphic.saldo / total).toFixed(2);
+      graphic.porcentagem = +(+graphic.saldo / total).toFixed(4);
       graphic.saldo = this.valueCurrencyFormatter(+graphic.saldo);
     });
 
