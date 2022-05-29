@@ -1,8 +1,8 @@
-export class PurchaseProxy {
+export class SaleProxy {
 
   //#region Constructor
 
-  constructor(entity: Partial<PurchaseProxy>) {
+  constructor(entity: Partial<SaleProxy>) {
     Object.assign(entity, this);
   }
 
@@ -16,7 +16,7 @@ export class PurchaseProxy {
   public cod: string;
 
   /**
-   * Data da compra
+   * Data da venda
    */
   public data: string;
 
@@ -29,16 +29,6 @@ export class PurchaseProxy {
    * Valor total da soma dos itens
    */
   public total: number;
-
-  /**
-   * Valor do ICMS pago
-   */
-  public ICMS: number;
-
-  /**
-   * Valor do ST pago
-   */
-  public ST: number;
 
   //#endregion
 

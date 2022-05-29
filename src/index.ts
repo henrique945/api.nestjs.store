@@ -1,6 +1,7 @@
 //#region Imports
 
 import { PurchaseController } from './modules/purchase/controllers/purchase.controller';
+import { SaleController } from './modules/sale/controllers/sale.controller';
 
 //#endregion
 
@@ -25,12 +26,14 @@ app.use(express.json());
 // TODO: implement Swagger
 const createApp = async () => {
   // controllers
-  const saleController = new PurchaseController();
+  const purchaseController = new PurchaseController();
+  const saleController = new SaleController();
 
   app.get('/', (req: any, res: any) => {
     res.send('<h1>Store API</h1>');
   });
 
+  app.use(purchaseController.getRoutes());
   app.use(saleController.getRoutes());
 
   app.listen(process.env.PORT, () => {

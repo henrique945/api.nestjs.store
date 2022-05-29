@@ -6,11 +6,12 @@
  */
 
 import purchase from '../../../assets/data/compras.json';
+import sale from '../../../assets/data/vendas.json';
 
 export function getPurchaseInfo(): any {
   return purchase;
 }
 
-export function getSaleInfo(): void {
-
+export function getSaleInfo(): any {
+  return sale;
 }
