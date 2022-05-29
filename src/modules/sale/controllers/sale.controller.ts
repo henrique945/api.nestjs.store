@@ -1,13 +1,19 @@
+//#region Imports
+
 import express from 'express';
-import { getSaleInfo } from '../../../infra/database/database';
 import { PurchaseProxy } from '../../purchase/models/purchase.proxy';
 import { SaleProxy } from '../models/sale.proxy';
+import { SaleService } from '../services/sale.service';
+
+//#endregion
 
 export class SaleController {
 
-  //#region Public Properties
+  //#region Constructor
 
-  public saleData: SaleProxy[] = getSaleInfo();
+  constructor(
+    private readonly saleService: SaleService,
+  ) {}
 
   //#endregion
 
@@ -22,17 +28,12 @@ export class SaleController {
     return router;
   }
 
-  public listSales(req, res): SaleProxy[] {
-    return res.json(this.saleData);
+  public async listSales(req, res): Promise<SaleProxy[]> {
+    return await this.saleService.listSales().then(response => res.json(response));
   }
 
-  public listSaleByCode(req, res): PurchaseProxy {
-    const sale = this.saleData.find(i => i.cod === req.params.cod);
-
-    if (!sale)
-      return res.json({ error: 'Venda não encontrada.' });
-
-    return res.json(sale);
+  public async listSaleByCode(req, res): Promise<PurchaseProxy> {
+    return await this.saleService.listSaleByCode(req, res).then(response => res.json(response));
   }
 
   //#endregion

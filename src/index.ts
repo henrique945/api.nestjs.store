@@ -1,7 +1,11 @@
 //#region Imports
 
 import { PurchaseController } from './modules/purchase/controllers/purchase.controller';
+import { PurchaseService } from './modules/purchase/services/purchase.service';
+import { ReportController } from './modules/report/controllers/report.controller';
+import { ReportService } from './modules/report/services/report.service';
 import { SaleController } from './modules/sale/controllers/sale.controller';
+import { SaleService } from './modules/sale/services/sale.service';
 
 //#endregion
 
@@ -24,17 +28,26 @@ app.use(express.json());
 
 // TODO: implement real database connections
 // TODO: implement Swagger
+
 const createApp = async () => {
-  // controllers
-  const purchaseController = new PurchaseController();
-  const saleController = new SaleController();
+  // dependencies
+  const purchaseService = new PurchaseService();
+  const purchaseController = new PurchaseController(purchaseService);
+
+  const saleService = new SaleService();
+  const saleController = new SaleController(saleService);
+
+  const reportService = new ReportService(saleService, purchaseService);
+  const reportController = new ReportController(reportService);
 
   app.get('/', (req: any, res: any) => {
     res.send('<h1>Store API</h1>');
   });
 
+  // controllers
   app.use(purchaseController.getRoutes());
   app.use(saleController.getRoutes());
+  app.use(reportController.getRoutes());
 
   app.listen(process.env.PORT, () => {
     console.log(`Api listening on -> ${ process.env.PORT }`);

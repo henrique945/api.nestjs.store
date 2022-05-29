@@ -1,17 +1,18 @@
 //#region Imports
 
 import express from 'express';
-import { getPurchaseInfo } from '../../../infra/database/database';
 import { PurchaseProxy } from '../models/purchase.proxy';
+import { PurchaseService } from '../services/purchase.service';
 
 //#endregion
 
-// TODO: ideal é passar a lógica dos controllers para os services (quebrando em mais uma etapa)
 export class PurchaseController {
 
-  //#region Public Properties
+  //#region Constructor
 
-  public purchaseData: PurchaseProxy[] = getPurchaseInfo();
+  constructor(
+    private readonly purchaseService: PurchaseService,
+  ) {}
 
   //#endregion
 
@@ -26,17 +27,12 @@ export class PurchaseController {
     return router;
   }
 
-  public listPurchases(req, res): PurchaseProxy[] {
-    return res.json(this.purchaseData);
+  public async listPurchases(req, res): Promise<PurchaseProxy[]> {
+    return await this.purchaseService.listPurchases().then(response => res.json(response));
   }
 
-  public listPurchaseByCode(req, res): PurchaseProxy {
-    const purchase = this.purchaseData.find(i => i.cod === req.params.cod);
-
-    if (!purchase)
-      return res.json({ error: 'Compra não encontrada.' });
-
-    return res.json(purchase);
+  public async listPurchaseByCode(req, res): Promise<PurchaseProxy> {
+    return await this.purchaseService.listPurchaseByCode(req, res).then(response => res.json(response));
   }
 
   //#endregion

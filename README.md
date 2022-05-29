@@ -5,10 +5,9 @@
 - [x] Start express.js project
 - [x] Create entity sale
 - [x] Create entity purchase
-- [ ] Create route cards
+- [x] Create route cards
 - [ ] Create route graphics
 - [ ] Create route table
-
 
 ## Entidades
 
