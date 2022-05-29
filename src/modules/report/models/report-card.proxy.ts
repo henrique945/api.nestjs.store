@@ -1,6 +1,6 @@
 export class ReportCardProxy {
 
-  //#region Constructors
+  //#region Constructor
 
   constructor(entity: Partial<ReportCardProxy>) {
     Object.assign(entity, this);

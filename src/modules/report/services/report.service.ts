@@ -1,6 +1,7 @@
 import { PurchaseService } from '../../purchase/services/purchase.service';
 import { SaleService } from '../../sale/services/sale.service';
 import { ReportCardProxy } from '../models/report-card.proxy';
+import { ReportGraphicProxy } from '../models/report-graphic.proxy';
 
 export class ReportService {
 
@@ -53,6 +54,44 @@ export class ReportService {
         valor: this.valueCurrencyFormatter(+STPurchases),
       },
     ];
+  }
+
+  public async getGraphics(): Promise<ReportGraphicProxy[]> {
+    const purchases = await this.purchaseService.listPurchases();
+    const sales = await this.saleService.listSales();
+
+    const graphics: ReportGraphicProxy[] = [];
+
+    // calcular total por ano
+    for (let year = 2017; year <= 2021; year++) {
+      const purchasesOnYear = purchases.filter(purchase => purchase.data.includes(year.toString()));
+      const totalPurchasesOnYear = +(purchasesOnYear.reduce((sum, i) => {
+        return sum + i.total;
+      }, 0).toFixed(2));
+
+      const salesOnYear = sales.filter(purchase => purchase.data.includes(year.toString()));
+      const totalSalesOnYear = +(salesOnYear.reduce((sum, i) => {
+        return sum + i.total;
+      }, 0).toFixed(2));
+
+      graphics.push({
+        ano: year.toString(),
+        saldo: (totalPurchasesOnYear - totalSalesOnYear).toString(),
+        porcentagem: 0,
+      });
+    }
+
+    // calcular porcentagens por ano
+    const total = graphics.reduce((sum, i) => {
+      return sum + +(i.saldo);
+    }, 0);
+
+    graphics.forEach(graphic => {
+      graphic.porcentagem = +(+graphic.saldo / total).toFixed(2);
+      graphic.saldo = this.valueCurrencyFormatter(+graphic.saldo);
+    });
+
+    return graphics;
   }
 
   //#endregion

@@ -2,6 +2,7 @@
 
 import express from 'express';
 import { ReportCardProxy } from '../models/report-card.proxy';
+import { ReportGraphicProxy } from '../models/report-graphic.proxy';
 import { ReportService } from '../services/report.service';
 
 //#endregion
@@ -22,7 +23,7 @@ export class ReportController {
     const router = express.Router();
 
     router.get('/report/cards', this.getCards.bind(this));
-    // router.get('/report/graphics', this.getGraphics.bind(this));
+    router.get('/report/graphics', this.getGraphics.bind(this));
     // router.get('/report/table', this.getTable.bind(this));
 
     return router;
@@ -35,11 +36,14 @@ export class ReportController {
     return await this.reportService.getCards().then(response => res.json(response));
   }
 
-  public getGraphics(req, res): any {
-
+  /**
+   * Método que busca informações dos últimos 5 anos de compras e vendas
+   */
+  public async getGraphics(req, res): Promise<ReportGraphicProxy[]> {
+    return await this.reportService.getGraphics().then(response => res.json(response));
   }
 
-  public getTable(req, res): any {
+  public async getTable(req, res): Promise<any> {
 
   }
 
